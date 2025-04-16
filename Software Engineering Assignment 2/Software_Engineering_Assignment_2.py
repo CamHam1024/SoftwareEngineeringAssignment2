@@ -1,20 +1,5 @@
 import csv
 
-# This should be the list used for the functions, Maybe someone could translate it into a CSV file?
-
-# Format I used here (do feel free to tweak) StudentName, StudentID, Modules[ModIDs], ModuleGrades[int]
-# students and their grades are in order of their student ID:
-# eg. Luci has studentID of 5, her modules are: 
-# Visual Data - Grade 55, Soft Engin - Grade 64, Network Security - Grade 61
-StudentList = [ 
-    {'StudentName': "Kamiel",  'StudentId': 0, 'Modules': [10,20,60], 'ModGrades': [44,68,64]},
-    {'StudentName': "Evan",    'StudentId': 1, 'Modules': [20,30,50], 'ModGrades': [42,60,70]},
-    {'StudentName': "Rebecca", 'StudentId': 2, 'Modules': [30,40,60], 'ModGrades': [51,61,62]},
-    {'StudentName': "Luci",    'StudentId': 3, 'Modules': [10,30,40], 'ModGrades': [55,64,61]},
-    {'StudentName': "Jack",    'StudentId': 4, 'Modules': [20,40,50], 'ModGrades': [57,70,45]},
-    {'StudentName': "Sally",   'StudentId': 5, 'Modules': [10,50,60], 'ModGrades': [58,44,48]},
-]
-
 # Format I used here (do feel free to tweak) ModuleName, ModID, Students[StudentIDs], ModuleGrades[ModGrades]
 # Similarly as above students are in numerical order with their grades :
 # eg. Visual Data has an ID of 10 and has registered: Kamiel - Grade 44, Luci - Grade 55, Sally - Grade 58
@@ -26,3 +11,32 @@ ModuleList = [
     {'ModuleName': "Working with Hardware", 'ModID':50 , 'Students':[1,4,5], 'StudentGrades':[70,45,48]},
     {'ModuleName': "Professional Skills",   'ModID':60 , 'Students':[0,2,5], 'StudentGrades':[64,62,48]},
 ]
+  
+#Student Data
+StudentList = [] #An empty list for where all the students will be placed into
+
+#The Student Class, here is where a student object can be created apon making a new student they will be added to the list automatically.
+class Student: 
+    def __init__(self, name, studentID, modules, modgrades):
+        #The individual attributes for the students: Name, Student ID, Modules attending and Modual grades
+        self.name = name 
+        self.studentID = studentID 
+        self.modules = modules #modules can be done using a list
+        self.modgrades = modgrades #modgrades should also be using a list in the same order as in modules for simplicity
+        
+        #Appends the newly created student into the "StudentList" list
+        StudentList.append({'StudentName': name,  'StudentId': studentID, 'Modules': modules, 'ModGrades': modgrades})
+
+#A Function for creating and adding a student to the list
+def create_student(Name: str, StudentID: int, ModualIDs: list, ModuleGrades: list):     
+    #print(f"Current Students: {StudentList}") #Prints the student List before adding an entry
+    newStudent = Student(Name, StudentID, ModualIDs, ModuleGrades)
+
+    print(f"Student: {newStudent.name} Added!") #confirmation of addition
+    print(f"Registered Students: ") #Prints the resulting List
+    for x in StudentList:
+        entry = x
+        print(x)
+    
+create_student("Bob", 102, [60,50,40], [10,20,30])
+create_student("Larry", 60, [30,20,60], [37,64,55])
