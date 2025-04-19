@@ -13,7 +13,7 @@ ModuleList = [
 ]
   
 #Student Data
-StudentList = [] #An empty list for where all the students will be placed into
+StudentList = [] #An empty list for where all the students will be placed into.
 
 #The Student Class, here is where a student object can be created apon making a new student they will be added to the list automatically.
 class Student: 
@@ -27,7 +27,7 @@ class Student:
         #Appends the newly created student into the "StudentList" list
         StudentList.append({'StudentName': name,  'StudentId': studentID, 'Modules': modules, 'ModGrades': modgrades})
 
-#A Function for creating and adding a student to the list
+#A Function for creating and adding a student to the list.
 def create_student(Name: str, StudentID: int, ModuleIDs: list, ModuleGrades: list):     
     #print(f"Current Students: {StudentList}") #Prints the student List before adding an entry
     newStudent = Student(Name, StudentID, ModuleIDs, ModuleGrades)
@@ -41,33 +41,33 @@ def create_student(Name: str, StudentID: int, ModuleIDs: list, ModuleGrades: lis
 create_student("Bob", 102, [60,50,40], [10,20,30])
 create_student("Larry", 60, [30,20,60], [37,64,55])
 
-#Function that Takes Student ID As input, Prints all modules student is part of, and grades
+#Function that Takes Student ID As input, Prints all modules student is part of, and grades.
 def student_finder():
-    studId = input("Input student's ID (type 'Exit' to exit): ") #This variable takes User input asking for the desired Student ID
+    studId = input("Student Finder: Input student's ID (type 'exit' to exit): ") #This variable takes User input asking for the desired Student ID.
     GradeIter = 0 #This variable is for use in iterating through the Grades.
     
-    if (studId != "Exit"): # if you type "Exit" you will close the function
+    if (studId != "exit"): # if you type "Exit" you will close the function.
         
-        for S in StudentList: #This loop cycles through the list of registered students
-            if (S['StudentId'] != int(studId)): #If the Student ID Isn't the desired Student ID It will Skip this iteration
+        for S in StudentList: #This loop cycles through the list of registered students.
+            if (S['StudentId'] != int(studId)): #If the Student ID Isn't the desired Student ID It will Skip this iteration.
                 continue
-            else: #if it is the desired ID then execute the following
+            else: #if it is the desired ID then execute the following.
                 
-                #Print the student name
-                print(f"=====\nStudent Name: {S['StudentName']}\n=====")
+                #Print the student name.
+                print(f"=====\nStudent Name: {S['StudentName']}")
                 
-                #Getting the module Names and grades are alil more complex
-                for Stu, Mod in S.items(): #Loop through the dictonary of the Student's records to find their Modules
+                #Getting the module Names and grades are alil more complex.
+                for Stu, Mod in S.items(): #Loop through the dictonary of the Student's records to find their Modules.
                     if (Stu != 'Modules'): #If it isnt the Modules key. Skip.
                         continue
                     else: #If it is Modules
-                        for modules in Mod: #Loop through the modules
+                        for modules in Mod: #Loop through the modules.
                             for M in ModuleList: 
                                 if(M['ModID'] != modules): #If the Student isnt registered for this module ID then Skip.
                                     continue
-                                else: #If the Module IS one the Student is registered
-                                    print(f"Module Name: {M['ModuleName']}") #Print module name
-                                    print(f"Module Grade: {S['ModGrades'][GradeIter]}/100\n") #print Module Grade
+                                else: #If the Module IS one the Student is registered.
+                                    print(f"Module Name: {M['ModuleName']}") #Print module name.
+                                    print(f"Module Grade: {S['ModGrades'][GradeIter]}/100\n") #print Module Grade.
                                     GradeIter += 1
                                 
                         break
@@ -75,6 +75,28 @@ def student_finder():
                 break
         # Calls itself in order for you to continue looking up students until you type "Exit"
         student_finder()
-        
-# Initial execution of Student_Finder
+     
+#Function that Takes Student ID As input, Prints the Student's grade average
+def student_adverage():
+    studId = input("Student adverages: Input student's ID (type 'exit' to exit): ") #This variable takes User input asking for the desired Student ID.
+    ScoreTotal = 0 #Container variable for addign the grades together.
+    NoOfModules = 0 #container variable for counting the modules.
+    
+    if (studId != "exit"): # if you type "Exit" you will close the function.
+        for S in StudentList: #This loop cycles through the list of registered students.
+            if (S['StudentId'] != int(studId)): #If the Student ID Isn't the desired Student ID It will Skip this iteration.
+                continue
+            else:
+                for M in S['ModGrades']: #Loops through the Module Grades for the Student.
+                    ScoreTotal += M #Adds each of the scores to a container variable.
+                    NoOfModules += 1 #counts each module score accessed.
+                #Prints Student name, along with  their Grade Average (ScoreTotal / NoOfModules).
+                print(f"=====\nStudent: {S['StudentName']}\nStudent Grade Average: {ScoreTotal/NoOfModules}\n=====")
+        student_adverage()
+
+# Initial execution of Student_Finder. (comment this out if you dont need it.)
 student_finder()
+
+# Initial execution of Student_adverage. (comment this out if you dont need it.)
+student_adverage()
+
