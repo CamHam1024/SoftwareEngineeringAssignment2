@@ -3,26 +3,12 @@ import csv
 # Format I used here (do feel free to tweak) ModuleName, ModID, Students[StudentIDs], ModuleGrades[ModGrades]
 # Similarly as above students are in numerical order with their grades :
 # eg. Visual Data has an ID of 10 and has registered:
-ModuleList = [ 
-    {'ModuleName': "Visual Data",           'ModID': 10, 'registeredStudentsID': [0, 3, 5], 'moduleGrades': [44, 55, 58]},
-    {'ModuleName': "Comp Sciance",          'ModID': 20, 'registeredStudentsID': [0, 1, 4], 'moduleGrades': [68, 42, 57]},
-    {'ModuleName': "Software Engineering",  'ModID': 30, 'registeredStudentsID': [1, 2, 3], 'moduleGrades': [60, 51, 64]},
-    {'ModuleName': "Network Security",      'ModID': 40, 'registeredStudentsID': [2, 3, 4], 'moduleGrades': [61, 61, 70]},
-    {'ModuleName': "Working with Hardware", 'ModID': 50, 'registeredStudentsID': [1, 4, 5], 'moduleGrades': [70, 45, 48]},
-    {'ModuleName': "Professional Skills",   'ModID': 60, 'registeredStudentsID': [0, 2, 5], 'moduleGrades': [64, 62, 48]},
-]
+ModuleList = []
   
 #Student Data
-StudentList = [
-    {'studentName': "Ella Thompson", 'studentID': 0, 'registeredModulsID': [10, 20, 60], 'myGrades': [44, 68, 64]},
-    {'studentName': "Liam Carter",   'studentID': 1, 'registeredModulsID': [20, 30, 50], 'myGrades': [42, 60, 70]},
-    {'studentName': "Sofia Ramirez", 'studentID': 2, 'registeredModulsID': [30, 40, 60], 'myGrades': [51, 61, 62]},
-    {'studentName': "Noah Patel",    'studentID': 3, 'registeredModulsID': [10, 30, 40], 'myGrades': [55, 61, 64]},
-    {'studentName': "Maya Chen",     'studentID': 4, 'registeredModulsID': [20, 40, 50], 'myGrades': [57, 70, 45]},
-    {'studentName': "Ethan Brooks",  'studentID': 5, 'registeredModulsID': [10, 50, 60], 'myGrades': [58, 48, 48]},
-] #An empty list for where all the students will be placed into.
+StudentList = [] #An empty list for where all the students will be placed into.
 
-#The Student Class, here is where a student object can be created apon making a new student they will be added to the list automatically.
+#The student class, here is where a student object can be created apon making a new student they will be added to the list automatically.
 class Student: 
     def __init__(self, name, studentID, modules, modgrades):
         #The individual attributes for the students: Name, Student ID, Modules attending and Modual grades
@@ -33,10 +19,11 @@ class Student:
         
         #Appends the newly created student into the "StudentList" list
         StudentList.append({'StudentName': name,  'studentID': studentID, 'registeredModulsID': modules, 'myGrades': modgrades})
+        print(f"Student: {name} ID: {studentID} Added!")
 
-#Module class for makign a new Module.
-class module:
-    def init(self, ModuleName, ModID, studentID, moduleGrades):
+#Module class for making a new Module.
+class Module:
+    def __init__(self, ModuleName, ModID, registeredStudentsID, moduleGrades):
         # The individual attributes for the module: Name, module ID, registered Student ID and module grades
         self.ModuleName = ModuleName
         self.ModID = ModID
@@ -44,28 +31,73 @@ class module:
         self.moduleGrades = moduleGrades
 
         # Appends the newly created student into the "StudentList" list
-        ModuleList.append({'ModuleName': ModuleName, 'ModID': ModID, 'registeredStudentsID': registeredStudentsID, 'moduleGrades': modgrades})
+        ModuleList.append({'ModuleName': ModuleName, 'ModID': ModID, 'registeredStudentsID': registeredStudentsID, 'moduleGrades': moduleGrades})
+        print(f"Module: {ModuleName} ID: {ModID} Added!")
 
-#A Function for creating and adding a student to the list.
-def create_student(Name: str, StudentID: int, ModuleIDs: list, ModuleGrades: list):     
-    #print(f"Current Students: {StudentList}") #Prints the student List before adding an entry
-    newStudent = Student(Name, StudentID, ModuleIDs, ModuleGrades)
-
-    print(f"Student: {newStudent.name} Added!") #confirmation of addition
+#Function for reading a CSV File to add the data    
+def studentAddFromDatabase(fileName):
     
+    with open(fileName) as csvFile:
+        reader = csv.DictReader(csvFile) #This here will read the CSV File provided as a Dictonary
+        
+        for row in reader:
+            #Due to how the CSV file is formatted the Registered Modules and student grades are in a single cell.
+            #So to extract those numbers we need to use Split(", ") to pull each of the numbers out.
+            SplitRegMod = row['Registered Modules'].split(", ")
+            SplitStuGrade = row['Student Grades'].split(", ")
+            
+            #Here are all the storage variables for use in the Class at the End.
+            fileStudName = row['Student Name'] #Extracts the Student name from the file.
+            fileStudID = int(row['Student ID']) #Extracts the Student ID.
+            RegModList = [] #An empty list to store the registered modules for the student.
+            StuGradList = [] #An empty list to store the student's grades.
+            
+            for num in SplitRegMod:
+                RegModList.append(int(num)) #this appends each of the extracted values into the temporary list and casts them to int.
+                    
+            for num in SplitStuGrade:
+                StuGradList.append(int(num)) #Same as for SplitRegMod
+            
+            newStudent = Student(fileStudName, fileStudID, RegModList, StuGradList)
+        print("=-=-=-=-=-=-=")
+ 
+def moduleAddFromDatabase(fileName):
+    #this function is functinally similar to what happens within studentAddFromDatabase but instead for modules
+    with open(fileName) as csvFile:
+        reader = csv.DictReader(csvFile)
+        
+        for row in reader:
+            
+            SplitRegStu = row['Registered Students'].split(", ")
+            SplitModGrade = row['Module Grades'].split(", ")
+            
+            fileModName = row['Module Name']
+            fileModID = int(row['Module ID'])
+            RegStuList = []
+            ModGradList = []
+            
+            for num in SplitRegStu:
+                RegStuList.append(int(num))
+                    
+            for num in SplitModGrade:
+                ModGradList.append(int(num))
+            
+            newModule = Module(fileModName, fileModID, RegStuList, ModGradList)
+        print("=-=-=-=-=-=-=")
+
 #Function that Takes Student ID As input, Prints all modules student is part of, and grades.
 def module_finder():
-    studId = input("Module Finder: Input student's ID (type 'exit' to exit): ") #This variable takes User input asking for the desired Student ID.
+    studId = input("\nModule Finder: Input student's ID (type 'exit' to exit): ") #This variable takes User input asking for the desired Student ID.
     GradeIter = 0 #This variable is for use in iterating through the Grades.
     
-    if (studId != "exit"): # if you type "Exit" you will close the function.
-        
+    if (studId != "exit"): #If you type "Exit" you will close the function.
+        print("==========")
         for S in StudentList: #This loop cycles through the list of registered students.
             if (S['studentID'] != int(studId)): #If the Student ID Isn't the desired Student ID It will Skip this iteration.
                 continue
-            else: #if it is the desired ID then execute the following.
+            else: #If it is the desired ID then execute the following.
                 #Print the student name.
-                print(f"=====\nStudent Name: {S['studentName']}")
+                print(f"Student Name: {S['StudentName']}")
                 
                 #Getting the module Names and grades are alil more complex.
                 for Stu, Mod in S.items(): #Loop through the dictonary of the Student's records to find their Modules.
@@ -85,6 +117,7 @@ def module_finder():
 
                 break
         # Calls itself in order for you to continue looking up students until you type "Exit"
+        print("==========")
         module_finder()
     
 #Function that finds students in a module
@@ -93,6 +126,7 @@ def student_finder():
     GradeIter = 0
     
     if (ModuleID != "exit"):
+        print("==========")
         for M in ModuleList:
             if (M['ModID'] != int(ModuleID)):
                 continue
@@ -109,14 +143,17 @@ def student_finder():
                                     #print(f"Student: {S['StudentId']} : {students}")
                                     continue
                                 else:
-                                    print(f"Student Name: {S['studentName']}") #Print module name.
+                                    print(f"Student Name: {S['StudentName']}") #Print module name.
                                     print(f"Student Grade: {M['moduleGrades'][GradeIter]}/100\n") #print Module Grade.
                                     GradeIter += 1   
         #Function calls itself to enable multiple searches (recursion)
-        student_finder()                   
+        print("==========")
+        student_finder()
+    
 
 #Function that prints Students andn their average grades.
 def student_adverage():
+    print("=-=-=-=-=")
     print("Student Averages: ")
     # Inital Loop to go though entrys
     for S in StudentList:
@@ -134,12 +171,13 @@ def student_adverage():
                     NoOfModules += 1
                 
                 # Print the adverage of each student, using round() to round them to 2 decimal palces.
-                print(f"Student: {S['studentName']}, Adv: {round(ScoreTotal/NoOfModules, 2)}")
-    print("\n")
+                print(f"Student: {S['StudentName']}, Adv: {round(ScoreTotal/NoOfModules, 2)}")
+    print("=-=-=-=-=")
 
-#Function that Takes Modules and modules adverage.
+#Function that Takes Modules and modules adverages.
 def module_adverage():
     # Inital Loop to go though entrys
+    print("=-=-=-=-=")
     print("Module Averages: ")
     for M in ModuleList:
         for Mod, Key in M.items():
@@ -157,16 +195,25 @@ def module_adverage():
                 
                 # Print the adverage of each student, using round() to round them to 2 decimal palces.
                 print(f"Module: {M['ModuleName']},  Adv: {round(ScoreTotal/NoOfModules, 2)}")
-    print("\n")
-      
-# initial execution of Student_finder.
-student_finder()
+    print("=-=-=-=-=")
+     
+# Initial Calling for adding the students to the database
+# Students database
+studentfile = 'List of Students.csv'
+studentAddFromDatabase(studentfile)
+
+# Module database
+modulefile = 'List of Modules.csv'
+moduleAddFromDatabase(modulefile)
 
 # Initial execution of Module_Finder. (comment this out if you dont need it.)
 module_finder()
 
 # Initial execution of Student_adverage. (comment this out if you dont need it.)
 student_adverage()
+
+# Initial execution of Student_finder. (comment this out if you dont need it.)
+student_finder()
 
 # Execution of Module_adverage. (comment this out if you dont need it.)
 module_adverage()
